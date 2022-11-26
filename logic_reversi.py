@@ -34,3 +34,7 @@ def check_end(turn):
     Проверяет закончилась ли игра, выводит победителя и тп
     """
     pass
+
+
+if __name__ == "__main__":
+    print("This module is not for direct call!")

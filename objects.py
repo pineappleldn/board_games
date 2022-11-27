@@ -7,7 +7,7 @@ class Chips:
         self.screen = screen
         self.x = 0
         self.y = 0
-        self.r = 20
+        self.r = 35
 
     def turn_over(self):
         """
@@ -31,7 +31,7 @@ class Hints:
         self.screen = screen
         self.x = 0
         self.y = 0
-        self.r = 7
+        self.r = 15
         self.color = (255, 0, 0, 200)
 
     def draw(self):

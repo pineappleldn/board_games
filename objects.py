@@ -1,38 +1,57 @@
+import pygame as pg
+
+
 class Chips:
-    color = 'white'
-    x = 0
-    y = 0
+    def __init__(self, screen):
+        self.color = 'white'
+        self.screen = screen
+        self.x = 0
+        self.y = 0
+        self.r = 35
 
     def turn_over(self):
         """
         Переворачивает фишку (меняет цвет) (подумать над анимацией градиента)
         """
-        pass
+        if self.color == 'white':
+            self.color = 'black'
+        else:
+            self.color = 'white'
 
     def draw(self):
         """
         Рисует фишку
         """
-        pass
+        pg.draw.circle(self.screen, self.color, (self.x, self.y), self.r)
+        pg.draw.circle(self.screen, 'black', (self.x, self.y), self.r, 1)
 
 
 class Hints:
-    x = 0
-    y = 0
+    def __init__(self, screen):
+        self.screen = screen
+        self.x = 0
+        self.y = 0
+        self.r = 15
+        self.color = (255, 0, 0, 200)
 
     def draw(self):
         """
         Рисует хинт
         """
-        pass
+        pg.draw.circle(self.screen, self.color, (self.x, self.y), self.r)
 
 
 class Turn:
-    state = 0
-    count = 0
+    def __init__(self):
+        self.state = 0
+        self.count = 0
 
     def turn_turn(self):
         """
         передает ход от одного игрока к другому
         """
-        pass
+        if self.state == 0:
+            self.state = 1
+        else:
+            self.state = 0
+

@@ -22,6 +22,7 @@ def action(matrix, event, turn):
     ставит новую фишку, меняет цвет "побежденных" фишек, обнуляет хинты
 
     """
+    end0 = 0
     hints = get_hints(matrix)
     check_hints(matrix, hints)
     if InMatrix(xevent, yevent):
@@ -47,7 +48,7 @@ def possible_move(matrix,xstart,ystart):
         return False
 
     other_player = 0
-    if turn == 1:
+    if turn.state == 1:
         matrix[xstart][ystart] = 1
         other_player = 2
     else:
@@ -96,7 +97,7 @@ def check_hints(matrix, hints):
     """
     Считает положение новых хинтов (соответственно возможных ходов)
     """
-    global end
+    global end0
     end = 1
     for (x, y) in hints:
         matrix[x][y] = 3
@@ -106,15 +107,15 @@ def check_hints(matrix, hints):
                 end = 0
                 break
     if end != 0:
-        end += 1
+        end0 += 1
 
 
 def check_end(turn):
     """
     Проверяет закончилась ли игра, выводит победителя и тп
     """
-    global end
-    if end == 3:
+    global end0
+    if end0 == 2:
         if pointsA > pointsB:
             print('победил игрок A с отрывом ', pointsA-pointsB)
         elif pointsA < pointsB:

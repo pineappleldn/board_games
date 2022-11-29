@@ -7,7 +7,7 @@ class Chips:
         self.screen = screen
         self.x = 0
         self.y = 0
-        self.r = 35
+        self.r = 30
 
     def turn_over(self):
         """

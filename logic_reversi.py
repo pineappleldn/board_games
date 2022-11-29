@@ -1,6 +1,5 @@
 from board import matrix
 from objects import *
-
 pointsA = 0
 pointsB = 0
 
@@ -16,7 +15,8 @@ def update_points(matrix):
         pointsA += lst.count(1)
         pointsB += lst.count(2)
 
-def action(matrix, event, turn):
+
+def action(matrix, turn, xevent, yevent):
     """
     Проверяет что можно сделать с выбранной клеткой и совершает ход:
     ставит новую фишку, меняет цвет "побежденных" фишек, обнуляет хинты
@@ -39,8 +39,11 @@ def flip(matrix, xstart, ystart):
     global turn, checkers_flip
     for [x, y] in checkers_flip:
         matrix[x][y] = turn
+
+
 def InMatrix(x,y):
     return x>=0 and x<8 and y>=0 and y<8
+
 
 def possible_move(matrix,xstart,ystart):
     global turn

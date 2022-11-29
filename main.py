@@ -5,21 +5,44 @@ from input import *
 from board import *
 from interface import *
 from objects import *
-
-width = 900
-height = 900
-screen = pg.display.set_mode((width, height))
+from Locals import *
+matrix = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    ]
 
 
 def main():
     """Главная функция главного модуля"""
     pg.init()
+    screen = pg.display.set_mode((width, height))
+
     turn = Turn()
-    finished = False
     print('Game started!')
 
+    draw_all(screen)
+    pg.display.update()
+    clock = pg.time.Clock()
+
+    finished = False
     while not finished:
-        finished = True
+        draw_all(screen)
+        clock.tick(FPS)
+
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                finished = True
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                x, y = check_on_board(event)
+                action(matrix, turn, x, y)
+
+
 
     print('Game finished!')
     pg.quit()

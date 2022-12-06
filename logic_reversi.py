@@ -23,20 +23,20 @@ def action(matrix, turn, xevent, yevent):
 
     """
     end0 = 0
-    hints = get_hints(matrix)
+    hints = get_hints(matrix, turn)
     check_hints(matrix, hints)
     if InMatrix(xevent, yevent):
         if matrix[xevent][yevent] == 3:
-            flip(matrix, xevent, yevent)
+            flip(matrix, xevent, yevent, turn)
             matrix[xevent][yevent] = turn
             for x in range(8):
                 for y in range(8):
                     if matrix[x][y] == 3:
-                        matrix[x][y] == 0
+                        matrix[x][y] = 0
 
 
-def flip(matrix, xstart, ystart):
-    global turn, checkers_flip
+def flip(matrix, xstart, ystart, turn):
+    global checkers_flip
     for [x, y] in checkers_flip:
         matrix[x][y] = turn
 
@@ -45,13 +45,12 @@ def InMatrix(x,y):
     return x>=0 and x<8 and y>=0 and y<8
 
 
-def possible_move(matrix,xstart,ystart):
-    global turn
-    if matrix[xstart, ystart] != 0 or not InMatrix(xstart, ystart):
+def possible_move(matrix,turn,xstart,ystart):
+    if matrix[xstart][ystart] != 0 or not InMatrix(xstart, ystart):
         return False
 
     other_player = 0
-    if turn.state == 1:
+    if turn == 1:
         matrix[xstart][ystart] = 1
         other_player = 2
     else:
@@ -88,11 +87,11 @@ def possible_move(matrix,xstart,ystart):
         return False
     return checkers_flip
 
-def get_hints(matrix):
+def get_hints(matrix, turn):
     hints = []
     for x in range(8):
         for y in range(8):
-            if possible_move(matrix,x,y) != False:
+            if possible_move(matrix, turn, x, y) != False:
                 hints.append((x,y))
     return hints
 

@@ -23,7 +23,6 @@ class Chips:
         Рисует фишку
         """
         pg.draw.circle(self.screen, self.color, (self.x, self.y), self.r)
-        pg.draw.circle(self.screen, 'black', (self.x, self.y), self.r, 1)
 
 
 class Hints:
@@ -54,4 +53,40 @@ class Turn:
             self.state = 1
         else:
             self.state = 0
+
+
+class Board:
+    def __init__(self, screen):
+        self.matrix = []
+        self.screen = screen
+        self.x = 0
+        self.y = 0
+        self.board_size = 0
+        self.
+
+    def draw_board(self, screen):
+        """
+        Функция рисует игровое поле.
+        board_size - ширина и высота картинки игрового поля
+        """
+        board = pg.image.load('board.jpg')
+        screen.blit(board, (screen.get_width() - board_size, (screen.get_height() - board_size) / 2))
+
+    def draw_cheaps(matrix, screen):
+        for x in range(8):
+            for y in range(8):
+                chip = Chips(screen)
+                hint = Hints(screen)
+                chip.x = screen.get_width() - board_size + 83 * (2 * x + 1) / 2
+                chip.y = (screen.get_height() - board_size) / 2 + 83 * (2 * y + 1) / 2
+                hint.x = screen.get_width() - board_size + 83 * (2 * x + 1) / 2
+                hint.y = (screen.get_height() - board_size) / 2 + 83 * (2 * y + 1) / 2
+                if matrix[x][y] == 1:
+                    chip.color = 'white'
+                    chip.draw()
+                elif matrix[x][y] == 2:
+                    chip.color = 'black'
+                    chip.draw()
+                elif matrix[x][y] == 3:
+                    hint.draw()
 

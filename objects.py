@@ -53,8 +53,8 @@ class Hints:
 class Board:
     board_size: int
 
-    def __init__(self, matrix=None, x=0, y=0, board_size=664):
-        self.matrix = [[None]*8]*8
+    def __init__(self, matrix1=None, x=0, y=0, board_size=664):
+        self.matrix = [[0 for i in range(8)] for j in range(8)]
         self.x = x
         self.y = y
         self.board_size = board_size
@@ -63,23 +63,23 @@ class Board:
             for j in range(8):
                 x = int(self.x + self.board_size * (2 * i + 1) / 16)
                 y = int(self.y + self.board_size * (2 * j + 1) / 16)
-                if matrix[i][j] == 1:
+                if matrix1[i][j] == 1:
                     self.matrix[i][j] = Chips(x, y, color='white')
-                elif matrix[i][j] == 2:
+                elif matrix1[i][j] == 2:
                     self.matrix[i][j] = Chips(x, y, color='black')
-                elif matrix[i][j] == 3:
+                elif matrix1[i][j] == 3:
                     self.matrix[i][j] = Hints(x, y)
-
+        pass
     # noinspection PyUnresolvedReferences
     def draw(self, screen):
         """
         Функция рисует игровое поле.
         board_size - ширина и высота картинки игрового поля
         """
-        screen.blit(self.image, (screen.get_width() - self.board_size, (screen.get_height() - self.board_size) / 2))
+        screen.blit(self.image, (self.x, self.y))
         for i in range(8):
             for j in range(8):
-                if self.matrix[i][j] is not None:
+                if self.matrix[i][j] != 0:
                     self.matrix[i][j].draw(screen)
 
     def check_on_board(self, event):

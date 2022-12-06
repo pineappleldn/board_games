@@ -62,7 +62,7 @@ class Board:
         self.x = 0
         self.y = 0
         self.board_size = 0
-        self.
+        self.square_size = 0
 
     def draw_board(self, screen):
         """
@@ -70,9 +70,9 @@ class Board:
         board_size - ширина и высота картинки игрового поля
         """
         board = pg.image.load('board.jpg')
-        screen.blit(board, (screen.get_width() - board_size, (screen.get_height() - board_size) / 2))
+        screen.blit(board, (screen.get_width() - self.board_size, (screen.get_height() - self.board_size) / 2))
 
-    def draw_cheaps(matrix, screen):
+    def draw_cheaps(self, screen):
         for x in range(8):
             for y in range(8):
                 chip = Chips(screen)

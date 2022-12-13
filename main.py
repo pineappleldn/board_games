@@ -6,6 +6,7 @@ from board import *
 from interface import *
 from objects import *
 from Locals import *
+
 matrix1 = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],

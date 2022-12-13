@@ -50,6 +50,7 @@ class Hints:
         pg.draw.circle(screen, self.color, (self.x, self.y), self.r)
 
 
+
 class Board:
     board_size: int
 

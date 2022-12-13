@@ -11,5 +11,6 @@ def check_on_board(event):
             return int((event.pos[0] - (width - 664)) // 83), int((event.pos[1] - (height - 664)/2) // 83)
 
 
+
 if __name__ == "__main__":
     print("This module is not for direct call!")

@@ -141,3 +141,5 @@ class Reversi_Board(Board):
                 print('победил игрок B с отрывом ', pointsB-pointsA)
             else:
                 print('ничья')
+
+

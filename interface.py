@@ -59,6 +59,7 @@ def draw_all(screen, matrix):
     draw_cheaps(matrix, screen)
 
 
+
 def text_all():
     """
     Выводит все что написано

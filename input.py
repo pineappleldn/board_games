@@ -8,7 +8,7 @@ def check_on_board(event):
     """
     if event.button == 1:
         if width - 664 <= event.pos[0] <= width - 1 and (height - 664)/2 <= event.pos[1] <= (height + 664)/2 - 1:
-            return (event.pos[0] - (width - 664)) // 83, (event.pos[1] - (height - 664)/2) // 83
+            return int((event.pos[0] - (width - 664)) // 83), int((event.pos[1] - (height - 664)/2) // 83)
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ from board import *
 from interface import *
 from objects import *
 from Locals import *
-matrix = [
+matrix1 = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 3, 0, 0, 0],
@@ -23,12 +23,13 @@ def main():
     pg.init()
     screen = pg.display.set_mode((width, height))
 
-    turn = Turn()
+    #turn = Turn()
     print('Game started!')
 
     draw_all(screen, matrix)
     pg.display.update()
     clock = pg.time.Clock()
+    reversi = Reversi_Board()
 
     finished = False
     while not finished:
@@ -40,7 +41,7 @@ def main():
             elif event.type == pg.MOUSEBUTTONDOWN:
                 x, y = check_on_board(event)
                 turn = 1
-                action(matrix, turn, x, y)
+                reversi.action(turn, x, y)
     print('Game finished!')
     pg.quit()
 

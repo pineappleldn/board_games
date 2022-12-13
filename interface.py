@@ -39,14 +39,15 @@ def draw_cheaps(matrix, screen):
             chip.y = (screen.get_height() - board_size)/2 + 83*(2*y+1)/2
             hint.x = screen.get_width() - board_size + 83*(2*x+1)/2
             hint.y = (screen.get_height() - board_size)/2 + 83*(2*y+1)/2
-            if matrix[x][y] == 1:
-                chip.color = 'white'
-                chip.draw(screen)
-            elif matrix[x][y] == 2:
-                chip.color = 'black'
-                chip.draw(screen)
-            elif matrix[x][y] == 3:
-                hint.draw(screen)
+            if matrix[x][y] != 0:
+                if matrix[x][y] == 1:
+                    chip.color = 'white'
+                    chip.draw(screen)
+                elif matrix[x][y] == 2:
+                    chip.color = 'black'
+                    chip.draw(screen)
+                elif matrix[x][y] == 3:
+                    hint.draw(screen)
 
 
 def draw_all(screen, matrix):

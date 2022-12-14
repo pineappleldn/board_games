@@ -1,21 +1,31 @@
 from board import matrix
-from objects import *
 from input import *
 pointsA = 0
 pointsB = 0
-
+matrix1 = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 3, 0, 0, 0],
+    [0, 0, 0, 1, 2, 3, 0, 0],
+    [0, 0, 3, 2, 1, 0, 0, 0],
+    [0, 0, 0, 3, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    ]
 class Reversi_Board(Board):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, matrix1):
+        super().__init__(matrix1)
         self.checkers_flip = checkers_flip = []
         self.hints = hints = []
 
     def possible_move(self, turn, xstart, ystart):
-
-        checkers_flip = []
+        for x in range(8):
+            for y in range(8):
+                if isinstance(self.matrix[x][y], Hints):
+                    matrix[x][y] = 0
         if self.matrix[xstart][ystart] != 0 or not self.InMatrix(xstart, ystart):
-            return checkers_flip
+            return self.checkers_flip
 
         player = Chips()
         player.color = 'white'
@@ -67,21 +77,19 @@ class Reversi_Board(Board):
         end0 = 0
 
         player = Chips()
-        player.color = 'white'
         other_player = Chips()
+        player.color = 'white'
         other_player.color = 'black'
-        if turn == 1:
-            self.matrix[xevent][yevent] = player
-        else:
+
+        if turn == 2:
             player.color = 'black'
             other_player.color = 'white'
-            self.matrix[xevent][yevent] = player
-        self.hints = self.get_hints(self, turn)
-        self.check_hints(self)
+        self.hints = self.get_hints(turn)
+        self.check_hints()
         if self.InMatrix(xevent, yevent):
             if self.matrix[xevent][yevent] == Hints():
-                self.checkers_flip = self.possible_move(self, turn, xevent, yevent)
-                self.flip(self, turn)
+                self.checkers_flip = self.possible_move(turn, xevent, yevent)
+                self.flip(turn)
                 self.matrix[xevent][yevent] = turn
                 for x in range(8):
                     for y in range(8):
@@ -108,7 +116,7 @@ class Reversi_Board(Board):
         self.hints = []
         for x in range(8):
             for y in range(8):
-                if len(self.possible_move(matrix, turn, x, y)) != 0:
+                if len(self.possible_move(turn, x, y)) != 0:
                     self.hints.append((x,y))
         return self.hints
 
@@ -118,11 +126,12 @@ class Reversi_Board(Board):
         """
         global end0
         end = 1
+        hint = Hints()
         for (x, y) in self.hints:
-            matrix[x][y] = 3
+            matrix[x][y] = hint
         for x in range(8):
             for y in range (8):
-                if matrix[x][y] == 3:
+                if matrix[x][y] == hint:
                     end = 0
                     break
         if end != 0:

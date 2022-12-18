@@ -128,7 +128,7 @@ class CornersBoard(Board):
         moves = {}
         last = []
         for i in range(start, stop, step):
-            if right > 7:
+            if right >= 8:
                 break
             current = self.matrix[i][right]
             if current == 0:

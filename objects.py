@@ -1,8 +1,9 @@
 import pygame as pg
+from Locals import *
 
 
 class Chips:
-    def __init__(self, x=0, y=0, r=30, color='white'):
+    def __init__(self, x=0, y=0, row=0, col=0 , color='white', r=30):
         """
         initiates instance of a chip on the board
         :param x: x-coordinate of the chip
@@ -13,6 +14,9 @@ class Chips:
         self.x = x
         self.y = y
         self.r = r
+        self.col = col
+        self.row = row
+        self.queen = False
 
     def turn_over(self):
         """
@@ -28,12 +32,20 @@ class Chips:
         Рисует фишку
         """
         pg.draw.circle(screen, self.color, (self.x, self.y), self.r)
+        if self.queen:
+            screen.blit(crown, (self.x - crown.get_width() // 2, self.y - crown.get_height() // 2))
 
     def get_color(self):
         if self.color == 'white':
             return 1
         elif self.color == 'black':
             return 2
+
+    def make_queen(self):
+        self.queen = True
+
+    def __repr__(self):
+        return str(self.color)
 
 
 class Hints:
@@ -62,12 +74,12 @@ class Board:
         self.image = pg.image.load('board.jpg')
         for i in range(8):
             for j in range(8):
-                x = int(self.x + self.board_size * (2 * i + 1) / 16)
-                y = int(self.y + self.board_size * (2 * j + 1) / 16)
+                x = int(self.x + self.board_size * (2 * j + 1) / 16)
+                y = int(self.y + self.board_size * (2 * i + 1) / 16)
                 if matrix1[i][j] == 1:
-                    self.matrix[i][j] = Chips(x, y, color='white')
+                    self.matrix[i][j] = Chips(x, y, i, j, color='white')
                 elif matrix1[i][j] == 2:
-                    self.matrix[i][j] = Chips(x, y, color='black')
+                    self.matrix[i][j] = Chips(x, y, i, j, color='black')
                 elif matrix1[i][j] == 3:
                     self.matrix[i][j] = Hints(x, y)
         pass

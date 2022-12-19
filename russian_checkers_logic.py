@@ -223,7 +223,7 @@ class CheckerBoard(Board):
         :param spisok: список с ходами
         :return: список, в котором записаны клетки, куда может быть сделан удар
         """
-        if self.matrix[y][x].color == 'black' and self.matrix[y][x].queen == False:  # пешка
+        if self.matrix[y][x].color == 'black' and not self.matrix[y][x].queen:  # пешка
             for ix, iy in (-1, -1), (-1, 1), (1, -1), (1, 1):
                 if 0 <= y + iy + iy <= 7 and 0 <= x + ix + ix <= 7:
                     if self.matrix[y + iy][x + ix].color == 'white':
@@ -252,7 +252,7 @@ class CheckerBoard(Board):
         """
         for y in range(8):  # сканируем всё поле
             for x in range(8):
-                if self.matrix[y][x].color == 'black' and self.matrix[y][x].queen == False:  # пешка
+                if self.matrix[y][x].color == 'black' and not self.matrix[y][x].queen:  # пешка
                     for ix, iy in (-1, 1), (1, 1):
                         if 0 <= y + iy <= 7 and 0 <= x + ix <= 7:
                             if self.matrix[y + iy][x + ix].color is None:
@@ -293,7 +293,7 @@ class CheckerBoard(Board):
         :param spisok: список с ходами
         :return: список, в котором записаны клетки, куда может быть сделан удар
         """
-        if self.matrix[y][x].color == 'white' and self.matrix[y][x].queen == False:  # пешка
+        if self.matrix[y][x].color == 'white' and not self.matrix[y][x].queen:  # пешка
             for ix, iy in (-1, -1), (-1, 1), (1, -1), (1, 1):
                 if 0 <= y + iy + iy <= 7 and 0 <= x + ix + ix <= 7:
                     if self.matrix[y + iy][x + ix].color == 'black':
@@ -322,7 +322,7 @@ class CheckerBoard(Board):
         """
         for y in range(8):  # сканируем всё поле
             for x in range(8):
-                if self.matrix[y][x].color == 'white' and self.matrix[y][x].queen == False:  # пешка
+                if self.matrix[y][x].color == 'white' and not self.matrix[y][x].queen:  # пешка
                     for ix, iy in (-1, -1), (1, -1):
                         if 0 <= y + iy <= 7 and 0 <= x + ix <= 7:
                             if self.matrix[y + iy][x + ix].color is None:

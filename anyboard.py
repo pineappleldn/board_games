@@ -1,6 +1,17 @@
 import pygame as pg
 
 
+class Nones:
+    def __init__(self):
+        self.color = None
+        self.queen = None
+        self.x = None
+        self.y = None
+
+    def draw(self, screen):
+        pass
+
+
 class Hints:
     def __init__(self, x=0, y=0, r=9):
         self.x = x
@@ -63,8 +74,6 @@ class Chips:
 
 
 class Board:
-    # board_size: int зачем?
-
     def __init__(self, board_image, image_white, image_black, crown, matrix1=None, x=0, y=0, board_size=573):
         self.matrix = [[0 for i in range(8)] for j in range(8)]
         self.x = x
@@ -84,8 +93,9 @@ class Board:
                     self.matrix[i][j] = Chips(image_white, image_black, crown, x, y, color='black')
                 elif matrix1[i][j] == 3:
                     self.matrix[i][j] = Hints(x, y)
+                elif matrix1[i][j] == 0:
+                    self.matrix[i][j] = Nones()
 
-    # noinspection PyUnresolvedReferences что это?
     def draw(self, screen):
         """
         Функция рисует игровое поле.
@@ -103,6 +113,7 @@ class Board:
                 if self.y <= event.pos[1] <= self.y + self.board_size:
                     return 8 * (event.pos[0] - self.x - 1) // self.board_size,\
                            8 * (event.pos[1] - self.y - 1) // self.board_size
+        return None, None
 
 
 if __name__ == "__main__":

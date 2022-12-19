@@ -29,8 +29,8 @@ def main():
     draw_all(screen, matrix)
     pg.display.update()
     clock = pg.time.Clock()
-    reversi = Reversi_Board(matrix1, x=237, y=119, board_size=664)
-    turn = 1
+    reversi = ReversiBoard(matrix1, x=237, y=119, board_size=664)
+    turn = 'white'
 
     finished = False
     while not finished:
@@ -42,6 +42,10 @@ def main():
             elif event.type == pg.MOUSEBUTTONDOWN:
                 x, y = reversi.check_on_board(event)
                 reversi.action(turn, x, y)
+                if turn == 'white':
+                    turn = 'black'
+                else:
+                    turn = 'white'
 
     print('Game finished!')
     pg.quit()

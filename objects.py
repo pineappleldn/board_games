@@ -111,7 +111,8 @@ class Board:
         if event.button == 1:
             if self.x <= event.pos[0] <= self.x + self.board_size:
                 if self.y <= event.pos[1] <= self.y + self.board_size:
-                    return 8 * (event.pos[0] - self.x - 1) // self.board_size, 8 * (event.pos[1] - self.y - 1) // self.board_size
+                    return 8 * (event.pos[0] - self.x - 1) // self.board_size, \
+                           8 * (event.pos[1] - self.y - 1) // self.board_size
         return None, None
 
 

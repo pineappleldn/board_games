@@ -24,13 +24,13 @@ def main():
     pg.init()
     screen = pg.display.set_mode((width, height))
 
-    #turn = Turn()
     print('Game started!')
 
     draw_all(screen, matrix)
     pg.display.update()
     clock = pg.time.Clock()
-    reversi = Reversi_Board()
+    reversi = Reversi_Board(matrix1, x=237, y=119, board_size=664)
+    turn = 1
 
     finished = False
     while not finished:
@@ -40,9 +40,9 @@ def main():
             if event.type == pg.QUIT:
                 finished = True
             elif event.type == pg.MOUSEBUTTONDOWN:
-                x, y = check_on_board(event)
-                turn = 1
+                x, y = reversi.check_on_board(event)
                 reversi.action(turn, x, y)
+
     print('Game finished!')
     pg.quit()
 

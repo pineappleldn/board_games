@@ -47,6 +47,16 @@ class Chips:
     def __repr__(self):
         return str(self.color)
 
+class Nones:
+    def __init__(self):
+        self.color = None
+        self.queen = None
+        self.x = None
+        self.y = None
+
+    def draw(self, screen):
+        pass
+
 
 class Hints:
     def __init__(self, x=0, y=0, r=15):
@@ -82,6 +92,8 @@ class Board:
                     self.matrix[i][j] = Chips(x, y, i, j, color='black')
                 elif matrix1[i][j] == 3:
                     self.matrix[i][j] = Hints(x, y)
+                elif matrix1[i][j] == 0:
+                    self.matrix[i][j] = Nones()
         pass
     # noinspection PyUnresolvedReferences
     def draw(self, screen):
@@ -100,7 +112,7 @@ class Board:
             if self.x <= event.pos[0] <= self.x + self.board_size:
                 if self.y <= event.pos[1] <= self.y + self.board_size:
                     return 8 * (event.pos[0] - self.x - 1) // self.board_size, 8 * (event.pos[1] - self.y - 1) // self.board_size
-
+        return None, None
 
 
 

@@ -1,13 +1,4 @@
-import pygame as pg
-import sys
-from logic_reversi import *
-from input import *
-from board import *
-from interface import *
-from objects import *
-from Locals import *
-from logic_checkers import *
-
+from russian_checkers_logic import *
 
 pg.init()
 screen = pg.display.set_mode((width, height))
@@ -17,17 +8,13 @@ clock = pg.time.Clock()
 finished = False
 while not finished:
     clock.tick(FPS)
-    if board.winner() != 0:
-        print(board.winner())
+    if board.end:
         finished = True
     for event in pg.event.get():
         if event.type == pg.QUIT:
             finished = True
         elif event.type == pg.MOUSEBUTTONDOWN:
-            col, row = board.check_on_board(event)
-            board.select(row, col)
-
+            board.position(event, screen)
     board.draw(screen)
-    board.draw_valid_moves(board.valid_moves, screen)
     pg.display.update()
 pg.quit()

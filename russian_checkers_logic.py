@@ -2,9 +2,18 @@ from objects import *
 from Locals import *
 
 
-class CornersBoard(Board):
+class CheckerBoard(Board):
     def __init__(self, matrix1=None, x=0, y=0, board_size=664):
         super().__init__(matrix1=matrix1, x=x, y=y, board_size=board_size)
+        """
+        конструктор класса CheckerBoard, который наследует класс Board
+        turn - проверяет: ход принадлежит белым или нет
+        pos1_x - номер колонки первого клика за ход
+        pos1_y - номер строки первого клика за ход
+        pos2_x - номер колонки клетки, выбранной для хода шашкой 
+        pos2_y - номер строки клетки, выбранной для хода шашкой
+        end - переменная, отвечающая за завершение игры
+        """
         self.turn = True
         self.pos1_x = -1
         self.pos1_y = -1
@@ -13,6 +22,9 @@ class CornersBoard(Board):
         self.end = False
 
     def move(self):
+        """
+        перемещение шашки из начального положения в выбранное
+        """
         x = int(self.x + self.board_size * (2 * self.pos2_x + 1) / 16)
         y = int(self.y + self.board_size * (2 * self.pos2_y + 1) / 16)
         if self.matrix[self.pos1_y][self.pos1_x].color is not None:
@@ -20,7 +32,13 @@ class CornersBoard(Board):
             self.matrix[self.pos2_y][self.pos2_x].queen = self.matrix[self.pos1_y][self.pos1_x].queen
             self.matrix[self.pos1_y][self.pos1_x] = Nones()
 
-    def position(self, event, screen):  # выбор клетки для хода 2
+    def position(self, event, screen):
+        """
+        в зависимости от очерёдности хода и положения выбранной клетки вызываются функции, которые непосредственно
+        совершают ход.
+        :param event: функция запускается только при нажатии левой кнопки мыши в области доски
+        :param screen: выбор экрана для отрисовки
+        """
         x, y = self.check_on_board(event)  # вычисляем координаты клетки
         if x is not None:
             if self.turn:
@@ -29,7 +47,7 @@ class CornersBoard(Board):
                 else:
                     if self.pos1_x != -1:  # клетка выбрана
                         self.pos2_x, self.pos2_y = x, y
-                        self.hod_igroka1(screen)
+                        self.turn_w(screen)
                     self.pos1_x = -1  # клетка не выбрана
             else:
                 if self.matrix[y][x].color == 'black':  # проверяем пешку игрока в выбранной клетке
@@ -37,103 +55,134 @@ class CornersBoard(Board):
                 else:
                     if self.pos1_x != -1:  # клетка выбрана
                         self.pos2_x, self.pos2_y = x, y
-                        self.hod_igroka2(screen)
+                        self.turn_b(screen)
                     self.pos1_x = -1  # клетка не выбрана
 
-    def spisok_hi1(self):  # составляем список ходов игрока
-        spisok = self.prosmotr_hodov_i1([])  # здесь проверяем обязательные ходы
+    def list_hw(self):
+        """
+        составляется список возможных ходов для 'белых'
+        :return: список, в котором хранятся координаты клеток, куда возможен ход
+        """
+        spisok = self.check_turn_w([])  # здесь проверяем обязательные ходы
         if not spisok:
-            spisok = self.prosmotr_hodov_i2([])  # здесь проверяем оставшиеся ходы
+            spisok = self.check_nf_turn_w([])  # здесь проверяем оставшиеся ходы
         return spisok
 
-    def spisok_hi2(self):  # составляем список ходов игрока
-        spisok = self.prosmotr_hodov_k1([])  # здесь проверяем обязательные ходы
+    def list_hb(self):
+        """
+        составляется список возможных ходов для 'чёрных'
+        :return: список, в котором хранятся координаты клеток, куда возможен ход
+        """
+        spisok = self.check_turn_b([])  # здесь проверяем обязательные ходы
         if not spisok:
-            spisok = self.prosmotr_hodov_k2([])  # здесь проверяем оставшиеся ходы
+            spisok = self.check_nf_turn_b([])  # здесь проверяем оставшиеся ходы
         return spisok
 
-    def skan(self):  # подсчёт пешек на поле
-        s_i = 0
-        s_k = 0
+    def skan(self):
+        """
+        подсчёт очков, каждого игрока: за пешку на поле добаляется 1 очко, за дамку на поле - 3 очка
+        :return:
+        s_w - очки белых
+        s_b - очки чёрных
+        """
+        s_w = 0
+        s_b = 0
         for i in range(8):
             for j in range(8):
                 if self.matrix[i][j].color == 'white':
                     if self.matrix[i][j].queen:
-                        s_i += 3
+                        s_w += 3
                     else:
-                        s_i += 1
+                        s_w += 1
                 else:
                     if self.matrix[i][j].queen:
-                        s_k += 3
+                        s_b += 3
                     else:
-                        s_k += 1
-        return s_k, s_i
+                        s_b += 1
+        return s_b, s_w
 
-    def hod_igroka1(self, screen):
-        self.turn = False  # считаем ход игрока выполненным
-        spisok = self.spisok_hi1()
+    def turn_w(self, screen):
+        """
+        Делается проверка на наличие выбранной клетки в списке возможных ходов 'белых', если после этого есть ещё ходы,
+        то ход остаётся у 'белых'.
+        После хода переменная turn меняет значение.
+        Также выполняется проверка на завершение игры.
+        :param screen: выбор экрана для отрисовки
+        """
+        self.turn = False  # считаем ход 'белых' выполненным
+        spisok = self.list_hw()
         if spisok:
             if ((self.pos1_x, self.pos1_y), (self.pos2_x, self.pos2_y)) \
                     in spisok:  # проверяем ход на соответствие правилам игры
-                t_spisok = self.hod(1, screen)  # если всё хорошо, делаем ход
+                t_spisok = self.turn_checkers(screen)  # если всё хорошо, делаем ход
                 if t_spisok:  # если есть ещё ход той же пешкой
                     self.turn = True  # считаем ход игрока невыполненным
             else:
                 self.turn = True  # считаем ход игрока невыполненным
-        s_k, s_i = self.skan()
-        if not s_i:
+
+        s_b, s_w = self.skan()  # проверка на завершение игры
+        if not s_w:
             print('Победили чёрные')
             self.end = True
-        elif not s_k:
+        elif not s_b:
             print('Победили белые')
             self.end = True
-        elif self.turn and not self.spisok_hi1():
+        elif self.turn and not self.list_hw():
             print('Победили чёрные')
             self.end = True
-        elif not self.turn and not self.spisok_hi2():
+        elif not self.turn and not self.list_hb():
             print('Победили белые')
             self.end = True
         pg.display.update()  # !!!обновление
 
-    def hod_igroka2(self, screen):
+    def turn_b(self, screen):
+        """
+        Делается проверка на наличие выбранной клетки в списке возможных ходов 'чёрных', если после этого есть ещё ходы,
+        то ход остаётся у 'чёрных'.
+        После хода переменная turn меняет значение.
+        Также выполняется проверка на завершение игры.
+        :param screen: выбор экрана для отрисовки
+        """
         self.turn = True  # считаем ход игрока выполненным
-        spisok = self.spisok_hi2()
+        spisok = self.list_hb()
         if spisok:
             if ((self.pos1_x, self.pos1_y), (self.pos2_x, self.pos2_y)) \
                     in spisok:  # проверяем ход на соответствие правилам игры
-                t_spisok = self.hod(1, screen)  # если всё хорошо, делаем ход
+                t_spisok = self.turn_checkers(screen)  # если всё хорошо, делаем ход
                 if t_spisok:  # если есть ещё ход той же пешкой
                     self.turn = False  # считаем ход игрока невыполненным
             else:
                 self.turn = False  # считаем ход игрока невыполненным
 
-                # определяем победителя
-        s_k, s_i = self.skan()
-        if not s_i:
+        s_b, s_w = self.skan()  # проверка на завершение игры
+        if not s_w:
             print('Победили чёрные')
             self.end = True
-        elif not s_k:
+        elif not s_b:
             print('Победили белые')
             self.end = True
-        elif self.turn and not self.spisok_hi1():
+        elif self.turn and not self.list_hw():
             print('Победили чёрные')
             self.end = True
-        elif not self.turn and not self.spisok_hi2():
+        elif not self.turn and not self.list_hb():
             print('Победили белые')
             self.end = True
         pg.display.update()  # !!!обновление
 
-    def hod(self, f, screen):
-        if f:
-            self.move()
-            self.draw(screen)  # рисуем игровое поле
+    def turn_checkers(self, screen):
+        """
+        Совершается отрисовка положения после перемещения шашки, а также регулируется создание дамок и проверка на
+        удары шашек другого цвета.
+        :param screen: выбор экрана для отрисовки
+        """
+        self.move()
+        self.draw(screen)  # рисуем игровое поле
         # превращение
         if self.pos2_y == 0 and self.matrix[self.pos2_y][self.pos2_x].color == 'white':
             self.matrix[self.pos2_y][self.pos2_x].queen = True
         # превращение
         if self.pos2_y == 7 and self.matrix[self.pos2_y][self.pos2_x].color == 'black':
             self.matrix[self.pos2_y][self.pos2_x].queen = True
-        # делаем ход
         self.move()
 
         # рубим пешку
@@ -148,25 +197,32 @@ class CornersBoard(Board):
             y_poz += ky
             if self.matrix[y_poz][x_poz].color is not None:
                 self.matrix[y_poz][x_poz] = Nones()
-                if f:
-                    self.move()
-                    self.draw(screen)  # рисуем игровое поле
+                self.move()
+                self.draw(screen)  # рисуем игровое поле
                 # проверяем ход той же пешкой...
-                if self.matrix[self.pos2_y][self.pos2_x].color == 'black':  # ...компьютера
-                    return self.prosmotr_hodov_k1p([], self.pos2_x, self.pos2_y)  # возвращаем список доступных ходов
-                elif self.matrix[self.pos2_y][self.pos2_x].color == 'white':  # ...игрока
-                    return self.prosmotr_hodov_i1p([], self.pos2_x, self.pos2_y)  # возвращаем список доступных ходов
-        if f:
-            self.move()
-            self.draw(screen)  # рисуем игровое поле
+                if self.matrix[self.pos2_y][self.pos2_x].color == 'black':  # ...игрока 2
+                    return self.check_f_turn_b([], self.pos2_x, self.pos2_y)  # возвращаем список доступных ходов
+                elif self.matrix[self.pos2_y][self.pos2_x].color == 'white':  # ...игрока 1
+                    return self.check_f_turn_w([], self.pos2_x, self.pos2_y)  # возвращаем список доступных ходов
 
-    def prosmotr_hodov_k1(self, spisok):  # проверка наличия обязательных ходов
+    def check_turn_b(self, spisok):
+        """
+        проверка обязательных ходов для 'чёрных'
+        :return: список, в которых хранятся клетки, в одну из которых ход должен быть обязательно совершён
+        """
         for y in range(8):  # сканируем всё поле
             for x in range(8):
-                spisok = self.prosmotr_hodov_k1p(spisok, x, y)
+                spisok = self.check_f_turn_b(spisok, x, y)
         return spisok
 
-    def prosmotr_hodov_k1p(self, spisok, x, y):
+    def check_f_turn_b(self, spisok, x, y):
+        """
+        алгоритм, который определяет возможность сделать удар за 'чёрных'
+        :param x: столбец фишки, для которой делается проверка
+        :param y: строка фишки, для которой делается проверка
+        :param spisok: список с ходами
+        :return: список, в котором записаны клетки, куда может быть сделан удар
+        """
         if self.matrix[y][x].color == 'black' and self.matrix[y][x].queen == False:  # пешка
             for ix, iy in (-1, -1), (-1, 1), (1, -1), (1, 1):
                 if 0 <= y + iy + iy <= 7 and 0 <= x + ix + ix <= 7:
@@ -188,7 +244,12 @@ class CornersBoard(Board):
                             break
         return spisok
 
-    def prosmotr_hodov_k2(self, spisok):  # проверка наличия остальных ходов
+    def check_nf_turn_b(self, spisok):
+        """
+        алгоритм, который определяет возможность сделать ход за 'чёрных'
+        :param spisok: список с ходами
+        :return: список, в котором записаны клетки, куда может быть сделан ход
+        """
         for y in range(8):  # сканируем всё поле
             for x in range(8):
                 if self.matrix[y][x].color == 'black' and self.matrix[y][x].queen == False:  # пешка
@@ -214,14 +275,24 @@ class CornersBoard(Board):
                                     break
         return spisok
 
-    def prosmotr_hodov_i1(self, spisok):  # проверка наличия обязательных ходов
-        spisok = []  # список ходов
+    def check_turn_w(self, spisok):
+        """
+        проверка обязательных ходов для 'белых'
+        :return: список, в которых хранятся клетки, в одну из которых ход должен быть обязательно совершён
+        """
         for y in range(8):  # сканируем всё поле
             for x in range(8):
-                spisok = self.prosmotr_hodov_i1p(spisok, x, y)
+                spisok = self.check_f_turn_w(spisok, x, y)
         return spisok
 
-    def prosmotr_hodov_i1p(self, spisok, x, y):
+    def check_f_turn_w(self, spisok, x, y):
+        """
+        алгоритм, который определяет возможность сделать удар за 'белых'
+        :param x: столбец фишки, для которой делается проверка
+        :param y: строка фишки, для которой делается проверка
+        :param spisok: список с ходами
+        :return: список, в котором записаны клетки, куда может быть сделан удар
+        """
         if self.matrix[y][x].color == 'white' and self.matrix[y][x].queen == False:  # пешка
             for ix, iy in (-1, -1), (-1, 1), (1, -1), (1, 1):
                 if 0 <= y + iy + iy <= 7 and 0 <= x + ix + ix <= 7:
@@ -243,7 +314,12 @@ class CornersBoard(Board):
                             break
         return spisok
 
-    def prosmotr_hodov_i2(self, spisok):  # проверка наличия остальных ходов
+    def check_nf_turn_w(self, spisok):
+        """
+        алгоритм, который определяет возможность сделать ход за 'чёрных'
+        :param spisok: список с ходами
+        :return: список, в котором записаны клетки, куда может быть сделан ход
+        """
         for y in range(8):  # сканируем всё поле
             for x in range(8):
                 if self.matrix[y][x].color == 'white' and self.matrix[y][x].queen == False:  # пешка

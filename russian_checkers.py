@@ -2,7 +2,7 @@ from russian_checkers_logic import *
 
 pg.init()
 screen = pg.display.set_mode((width, height))
-board = CornersBoard(matrix2, x=100, y=100, board_size=664)
+board = CheckerBoard(matrix2, x=100, y=100, board_size=664)
 
 clock = pg.time.Clock()
 finished = False

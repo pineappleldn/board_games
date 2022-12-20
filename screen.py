@@ -6,8 +6,14 @@ pg.font.init()
 
 
 class Background:
+    """
+    класс экрана, содержит кнопки, правила и доску
+    """
     def __init__(self, image_back, image_rules, board_image,
                  image_white, image_black, crown, matrix1=None, matrix2=None):
+        """
+        конструктор класса экрана, собирает все разпологаемые на нем обьекты
+        """
         self.image = image_back
         self.image_rules = image_rules
         self.reversi = ReversiBoard(board_image, image_white, image_black, crown, matrix1, 538, 88)
@@ -43,6 +49,9 @@ class Background:
             self.end = True
 
     def draw(self, screen):
+        """
+        отрисовка экрана и всех его объектов
+        """
         screen.blit(self.image, (0, 0))
         self.active_board.draw(screen)
         if self.mode == 1 or self.mode == 2 or self.mode == 3:
@@ -112,6 +121,9 @@ class Background:
             screen.blit(text, (400, 250))
 
     def position(self, event, screen):
+        """
+        обработка экраном нажатий
+        """
         self.active_board.position(event, screen)
         if self.mode == 1 or self.mode == 2 or self.mode == 3:
             if self.game_button.position(event) is not None:
@@ -130,6 +142,9 @@ class Background:
                 self.set_mode(self.end_button.position(event))
 
     def change_mode(self):
+        """
+        смена режима экрана
+        """
         if self.active_board.end:
             self.set_mode(5)
 

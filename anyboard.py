@@ -19,6 +19,9 @@ class Nones:
 
 
 class Hints:
+    """
+    класс подсказок
+    """
     def __init__(self, x=0, y=0, r=9):
         self.x = x
         self.y = y
@@ -76,11 +79,20 @@ class Chips:
             return 2
 
     def make_queen(self):
+        """
+        делает шашку дамкой
+        """
         self.queen = True
 
 
 class Board:
+    """
+    класс доски
+    """
     def __init__(self, board_image, image_white, image_black, crown, matrix1=None, x=0, y=0, board_size=573):
+        """
+        конструктор класса доски, получает все требуемые изображения, координаты и размеры
+        """
         self.matrix = [[0 for i in range(8)] for j in range(8)]
         self.x = x
         self.y = y
@@ -114,6 +126,9 @@ class Board:
                     self.matrix[i][j].draw(screen)
 
     def check_on_board(self, event):
+        """
+        Проверяет попал ли пользователь на доску, возвращает координаты квадрата в доске
+        """
         if event.button == 1:
             if self.x <= event.pos[0] <= self.x + self.board_size:
                 if self.y <= event.pos[1] <= self.y + self.board_size:

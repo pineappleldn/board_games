@@ -7,8 +7,14 @@ class Nones:
         self.queen = None
         self.x = None
         self.y = None
+        self.end = False
+        self.end_phrase = ''
+        self.turn = None
 
     def draw(self, screen):
+        pass
+
+    def position(self, event, screen):
         pass
 
 

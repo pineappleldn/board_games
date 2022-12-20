@@ -1,4 +1,4 @@
-from logic_reversi import *
+from reversi_logic import *
 from russian_checkers_logic import *
 from anyboard import *
 pg.font.init()
@@ -6,12 +6,11 @@ pg.font.init()
 
 class Background:
     def __init__(self, image_back, image_rules, board_image,
-                 image_white, image_black, crown, matrix1=None):
+                 image_white, image_black, crown, matrix1=None, matrix2=None):
         self.image = image_back
         self.image_rules = image_rules
         self.reversi = ReversiBoard(board_image, image_white, image_black, crown, matrix1, 538, 88)
-        self.checkers = CheckerBoard(board_image, image_white, image_black, crown, matrix1, 538, 88)
-        self.active_rules = Nones()
+        self.checkers = CheckerBoard(board_image, image_white, image_black, crown, matrix2, 538, 88)
         self.active_board = Nones()
         self.mode = 4
 
@@ -28,14 +27,15 @@ class Background:
         elif self.mode == 3:
             self.active_board = self.checkers
         elif self.mode == 4 or mode == 5:
+            phase = self.active_board.end_phrase
             self.active_board = Nones()
-            self.active_rules = Nones()
+            self.active_board.end_phrase = phase
 
     def draw(self, screen):
         screen.blit(self.image, (0, 0))
         self.active_board.draw(screen)
-        screen.blit(self.image_rules, (150, 260))
         if self.mode == 1 or self.mode == 2 or self.mode == 3:
+            screen.blit(self.image_rules, (150, 260))
             if (self.active_board.turn and self.mode != 3) or\
                     (self.mode == 3 and not self.active_board.turn):
                 text = pg.font.SysFont('centuryschoolbookполужирныйкурсив', 36).render('Ход белых', False, 'black')
@@ -90,15 +90,16 @@ class Background:
                                                                                    False, 'black')
             screen.blit(text, (200, 150))
         elif self.mode == 5:
-            text = pg.font.SysFont('arial', 36).render(self.active_board.end_phrase, False, 'black')
-            screen.blit(text, (200, 470))
+            text = pg.font.SysFont('centuryschoolbookполужирныйкурсив', 45).render(self.active_board.end_phrase,
+                                                                                   False, 'black')
+            screen.blit(text, (400, 150))
 
     def position(self, event, screen):
         self.active_board.position(event, screen)
 
     def change_mode(self):
         if self.active_board.end:
-            self.mode = 5
+            self.set_mode(5)
 
 
 if __name__ == "__main__":
@@ -127,9 +128,10 @@ if __name__ == "__main__":
         [0, 0, 0, 0, 0, 0, 0, 0],
         ]
     background = Background(imageback, imagerules, boardimage,
-                            imagewhite, imageblack, crownimage, mat)
-    background.set_mode(1)
+                            imagewhite, imageblack, crownimage, mat, mat)
+    background.set_mode(5)
     scr = pg.display.set_mode((1200, 750))
+    background.active_board.end_phrase = 'Победили белые'
     background.draw(scr)
     pg.display.update()
     clock = pg.time.Clock()

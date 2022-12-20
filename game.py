@@ -52,6 +52,8 @@ def main():
 
     while not finished:
         clock.tick(FPS)
+        if background.end:
+            finished = True
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 finished = True

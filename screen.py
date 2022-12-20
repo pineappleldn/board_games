@@ -1,6 +1,7 @@
 from reversi_logic import *
 from russian_checkers_logic import *
 from anyboard import *
+from buttons import *
 pg.font.init()
 
 
@@ -13,11 +14,19 @@ class Background:
         self.checkers = CheckerBoard(board_image, image_white, image_black, crown, matrix2, 538, 88)
         self.active_board = Nones()
         self.mode = 4
+        self.end = False
+        self.menu_button1 = Buttons(470, 240, 1, 'Реверси')
+        self.menu_button2 = Buttons(475, 320, 2, 'Шашки')
+        self.menu_button3 = Buttons(450, 400, 3, 'Поддавки')
+        self.menu_button4 = Buttons(490, 480, 6, 'Выход')
+        self.game_button = Buttons(215, 55, 4, 'Меню')
+        self.end_button = Buttons(520, 400, 4, 'Меню')
 
     def set_mode(self, mode):
         """
         устанавливает режим экрана
-        :param mode: 1 - игра реверси, 2 - игра шашки, 3 - игра поддавки, 4 - экран главного меню, 5 - конец игры
+        :param mode: 1 - игра реверси, 2 - игра шашки, 3 - игра поддавки, 4 - экран главного меню,
+        5 - экран окончания игры, 6 - выход из игры
         """
         self.mode = mode
         if self.mode == 1:
@@ -30,12 +39,15 @@ class Background:
             phase = self.active_board.end_phrase
             self.active_board = Nones()
             self.active_board.end_phrase = phase
+        elif self.mode == 6:
+            self.end = True
 
     def draw(self, screen):
         screen.blit(self.image, (0, 0))
         self.active_board.draw(screen)
         if self.mode == 1 or self.mode == 2 or self.mode == 3:
             screen.blit(self.image_rules, (150, 260))
+            self.game_button.draw(screen)
             if (self.active_board.turn and self.mode != 3) or\
                     (self.mode == 3 and not self.active_board.turn):
                 text = pg.font.SysFont('centuryschoolbookполужирныйкурсив', 36).render('Ход белых', False, 'black')
@@ -86,16 +98,36 @@ class Background:
             screen.blit(t2, (190, 320))
             screen.blit(t3, (190, 350))
         elif self.mode == 4:
+            self.menu_button1.draw(screen)
+            self.menu_button2.draw(screen)
+            self.menu_button3.draw(screen)
+            self.menu_button4.draw(screen)
             text = pg.font.SysFont('centuryschoolbookполужирныйкурсив', 45).render('В какую игру вы хотите сыграть?',
                                                                                    False, 'black')
             screen.blit(text, (200, 150))
         elif self.mode == 5:
+            self.end_button.draw(screen)
             text = pg.font.SysFont('centuryschoolbookполужирныйкурсив', 45).render(self.active_board.end_phrase,
                                                                                    False, 'black')
-            screen.blit(text, (400, 150))
+            screen.blit(text, (400, 250))
 
     def position(self, event, screen):
         self.active_board.position(event, screen)
+        if self.mode == 1 or self.mode == 2 or self.mode == 3:
+            if self.game_button.position(event) is not None:
+                self.set_mode(self.game_button.position(event))
+        elif self.mode == 4:
+            if self.menu_button1.position(event) is not None:
+                self.set_mode(self.menu_button1.position(event))
+            if self.menu_button2.position(event) is not None:
+                self.set_mode(self.menu_button2.position(event))
+            if self.menu_button3.position(event) is not None:
+                self.set_mode(self.menu_button3.position(event))
+            if self.menu_button4.position(event) is not None:
+                self.set_mode(self.menu_button4.position(event))
+        elif self.mode == 5:
+            if self.end_button.position(event) is not None:
+                self.set_mode(self.end_button.position(event))
 
     def change_mode(self):
         if self.active_board.end:

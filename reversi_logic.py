@@ -1,10 +1,43 @@
-from objects import *
+from anyboard import *
+
+
+class ReversiHints(Hints):
+    def __init__(self, x=0, y=0, r=9):
+        super().__init__(x=x, y=y, r=r)
+
+    def draw(self, screen):
+        """
+        Переводит координаты из положения на доске в пиксели, рисует хинт
+        """
+        x = int(538 + 573 * (2 * self.y + 1) / 16)
+        y = int(88 + 573 * (2 * self.x + 1) / 16)
+        pg.draw.circle(screen, self.color, (x, y), self.r)
+
+
+class ReversiChips(Chips):
+    def __init__(self, image_white, image_black, crown, x=0, y=0, color='white'):
+        super().__init__(image_white=image_white, image_black=image_black, crown=crown, x=x, y=y, color=color)
+
+    def draw(self, screen):
+        """
+        Переводит координаты из положения на доске в пиксели, рисует фишку
+        """
+        x = int(538 + 573 * (2 * self.y + 1) / 16)
+        y = int(88 + 573 * (2 * self.x + 1) / 16)
+        if self.color == 'white':
+            screen.blit(self.image_white, (x - self.image_white.get_width() // 2,
+                                           y - self.image_white.get_height() // 2))
+        else:
+            screen.blit(self.image_black, (x - self.image_black.get_width() // 2,
+                                           y - self.image_black.get_height() // 2))
+        if self.queen:
+            screen.blit(self.crown, (self.x - self.crown.get_width() // 2, self.y - self.crown.get_height() // 2))
 
 
 class ReversiBoard(Board):
-
-    def __init__(self, matrix1=None, x=0, y=0, board_size=664):
-        super().__init__(matrix1=matrix1, x=x, y=y, board_size=board_size)
+    def __init__(self, board_image, image_white, image_black, crown, matrix1=None, x=0, y=0, board_size=573):
+        super().__init__(board_image=board_image, image_white=image_white, image_black=image_black, crown=crown,
+                         matrix1=matrix1, x=x, y=y, board_size=board_size)
         self.checkers_flip = []
         self.hints = []
         self.end = False
@@ -12,8 +45,9 @@ class ReversiBoard(Board):
         self.turn = True
         self.pointsA = 0
         self.pointsB = 0
+        self.end_phrase = ''
 
-    def move(self, event):
+    def position(self, event, screen):
         x, y = self.check_on_board(event)
         if x is not None and y is not None:
             self.action(y, x)
@@ -35,8 +69,8 @@ class ReversiBoard(Board):
         if not isinstance(self.matrix[xstart][ystart], Nones):
             return self.checkers_flip
 
-        xpixel, ypixel = self.GetPixelCoords(xstart, ystart)
-        self.matrix[xstart][ystart] = Chips(xpixel, ypixel)
+        xpixel, ypixel = xstart, ystart
+        self.matrix[xstart][ystart] = ReversiChips(self.image_white, self.image_black, self.crown, xpixel, ypixel)
         if self.turn:
             self.matrix[xstart][ystart].color = 'white'
         else:
@@ -85,13 +119,13 @@ class ReversiBoard(Board):
         self.check_hints()
         if self.InMatrix(xevent, yevent):
             if isinstance(self.matrix[xevent][yevent], Hints):
-                xpixel, ypixel = self.GetPixelCoords(xevent, yevent)
+                xpixel, ypixel = xevent, yevent
                 if len(self.possible_move(xevent, yevent)) == 0:
                     return False
                 else:
                     self.possible_move(xevent, yevent)
                     self.flip()
-                    self.matrix[xevent][yevent] = Chips(xpixel, ypixel)
+                    self.matrix[xevent][yevent] = ReversiChips(self.image_white, self.image_black, self.crown, xpixel, ypixel)
                     if self.turn:
                         self.matrix[xevent][yevent].color = 'white'
                     else:
@@ -137,20 +171,20 @@ class ReversiBoard(Board):
                         self.pointsA += 1
                     if self.matrix[x][y].color == 'black':
                         self.pointsB += 1
+
     def check_hints(self):
         """
         Считает положение новых хинтов (соответственно возможных ходов)
         """
         end = 1
         for (x, y) in self.hints:
-            xpixel, ypixel = self.GetPixelCoords(x, y)
-            self.matrix[x][y] = Hints(xpixel, ypixel)
+            xpixel, ypixel = x, y
+            self.matrix[x][y] = ReversiHints(xpixel, ypixel)
         for y in range(8):
             for x in range(8):
-                continue
-            if isinstance(self.matrix[x][y], Hints):
-                end = 0
-                break
+                if isinstance(self.matrix[x][y], Hints):
+                    end = 0
+                    break
         if end != 0:
             self.end0 += 1
 
@@ -160,11 +194,11 @@ class ReversiBoard(Board):
         """
         if self.end0 == 2:
             if self.pointsA > self.pointsB:
-                print('победил игрок A с отрывом ', self.pointsA-self.pointsB)
+                self.end_phrase = 'Победили белые'
             elif self.pointsA < self.pointsB:
-                print('победил игрок B с отрывом ', self.pointsB-self.pointsA)
+                self.end_phrase = 'Победили чёрные'
             else:
-                print('ничья')
+                self.end_phrase = 'Победила дружба!'
             self.end = True
         else:
             self.end = False

@@ -27,6 +27,7 @@ class Background:
         self.menu_button4 = Buttons(490, 480, 6, 'Выход')
         self.game_button = Buttons(215, 55, 4, 'Меню')
         self.end_button = Buttons(520, 400, 4, 'Меню')
+        self.x = False
 
     def set_mode(self, mode):
         """
@@ -36,16 +37,25 @@ class Background:
         """
         self.mode = mode
         if self.mode == 1:
+            self.x = False
             self.active_board = self.reversi
         elif self.mode == 2:
+            self.x = False
             self.active_board = self.checkers
         elif self.mode == 3:
+            self.x = True
             self.active_board = self.checkers
         elif self.mode == 4 or mode == 5:
             phase = self.active_board.end_phrase
             self.active_board = Nones()
+            if self.x:
+                if phase == 'Победили белые':
+                    phase = 'Победили чёрные'
+                else:
+                    phase = 'Победили белые'
             self.active_board.end_phrase = phase
         elif self.mode == 6:
+            self.x = False
             self.end = True
 
     def draw(self, screen):
@@ -57,8 +67,7 @@ class Background:
         if self.mode == 1 or self.mode == 2 or self.mode == 3:
             screen.blit(self.image_rules, (150, 260))
             self.game_button.draw(screen)
-            if (self.active_board.turn and self.mode != 3) or\
-                    (self.mode == 3 and not self.active_board.turn):
+            if self.active_board.turn :
                 text = pg.font.SysFont('centuryschoolbookполужирныйкурсив', 36).render('Ход белых', False, 'black')
                 screen.blit(text, (200, 170))
             else:
@@ -156,13 +165,13 @@ if __name__ == "__main__":
     imageback = pg.image.load('resources/background.jpg')
     imagerules = pg.image.load('resources/rulesheet.png')
     imagerules.set_colorkey((255, 255, 255))
-    boardimage = pg.image.load('board.png')
+    boardimage = pg.image.load('resources/board.png')
     boardimage.set_colorkey((255, 255, 255))
-    imagewhite = pg.image.load('whitechip.png')
+    imagewhite = pg.image.load('resources/whitechip.png')
     imagewhite.set_colorkey((255, 255, 255))
-    imageblack = pg.image.load('blackchip.png')
+    imageblack = pg.image.load('resources/blackchip.png')
     imageblack.set_colorkey((255, 255, 255))
-    crownimage = pg.image.load('crown.png')
+    crownimage = pg.image.load('resources/crown.png')
     crownimage.set_colorkey((255, 255, 255))
     mat = [
         [0, 0, 0, 0, 0, 0, 0, 0],
@@ -176,7 +185,7 @@ if __name__ == "__main__":
         ]
     background = Background(imageback, imagerules, boardimage,
                             imagewhite, imageblack, crownimage, mat, mat)
-    background.set_mode(5)
+    background.set_mode(3)
     scr = pg.display.set_mode((1200, 750))
     background.active_board.end_phrase = 'Победили белые'
     background.draw(scr)

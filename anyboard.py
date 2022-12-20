@@ -141,13 +141,13 @@ if __name__ == "__main__":
     '''
     тест файла 
     '''
-    boardimage = pg.image.load('board.png')
+    boardimage = pg.image.load('resources/board.png')
     boardimage.set_colorkey((255, 255, 255))
-    imagewhite = pg.image.load('whitechip.png')
+    imagewhite = pg.image.load('resources/whitechip.png')
     imagewhite.set_colorkey((255, 255, 255))
-    imageblack = pg.image.load('blackchip.png')
+    imageblack = pg.image.load('resources/blackchip.png')
     imageblack.set_colorkey((255, 255, 255))
-    crownimage = pg.image.load('crown.png')
+    crownimage = pg.image.load('resources/crown.png')
     crownimage.set_colorkey((255, 255, 255))
     mat = [
         [0, 0, 0, 0, 0, 0, 0, 0],

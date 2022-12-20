@@ -17,6 +17,8 @@ class ReversiBoard(Board):
         x, y = self.check_on_board(event)
         if x is not None and y is not None:
             self.action(y, x)
+            self.score()
+            self.check_end()
 
     def swap(self):
         if self.turn:
@@ -66,7 +68,7 @@ class ReversiBoard(Board):
                     while True:
                         x -= dir[0]
                         y -= dir[1]
-                        if x == xstart:
+                        if (x == xstart) and (y == ystart):
                             break
                         self.checkers_flip.append([x, y])
 
@@ -125,6 +127,16 @@ class ReversiBoard(Board):
                 if len(self.possible_move(x, y)) != 0:
                     self.hints.append((x, y))
 
+    def score(self):
+        self.pointsA = 0
+        self.pointsB = 0
+        for x in range(8):
+            for y in range(8):
+                if not isinstance(self.matrix[x][y], Nones):
+                    if self.matrix[x][y].color == 'white':
+                        self.pointsA += 1
+                    if self.matrix[x][y].color == 'black':
+                        self.pointsB += 1
     def check_hints(self):
         """
         Считает положение новых хинтов (соответственно возможных ходов)

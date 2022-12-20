@@ -38,6 +38,13 @@ class ReversiBoard(Board):
     def __init__(self, board_image, image_white, image_black, crown, matrix1=None, x=0, y=0, board_size=573):
         super().__init__(board_image=board_image, image_white=image_white, image_black=image_black, crown=crown,
                          matrix1=matrix1, x=x, y=y, board_size=board_size)
+        """Конструктор класса;x, y, board_size - параметры доски на экране;
+        turn - индикатор того, чей ход
+        end - индикатор конца игры
+        pointsA, pointsB - счет первого и второго игрока соответственно
+        hints - список возможных ходов
+        checkers_flip - список фишек, которые надо перевернуть после хода"""
+
         self.checkers_flip = []
         self.hints = []
         self.end = False
@@ -48,6 +55,7 @@ class ReversiBoard(Board):
         self.end_phrase = ''
 
     def position(self, event, screen):
+        """Ход, посчет очков, проверка, закончилась ли игра"""
         x, y = self.check_on_board(event)
         if x is not None and y is not None:
             self.action(y, x)
@@ -55,12 +63,15 @@ class ReversiBoard(Board):
             self.check_end()
 
     def swap(self):
+        """ смена хода """
         if self.turn:
             self.turn = False
         else:
             self.turn = True
 
     def possible_move(self, xstart, ystart):
+        """Проверка возможности хода в клетку с координатами xstart, ystart;
+        Если ход возможен, то возвращает список фишек, которые надо перевернуть"""
         for j in range(8):
             for i in range(8):
                 if isinstance(self.matrix[i][j], Hints):
@@ -142,19 +153,19 @@ class ReversiBoard(Board):
         return True
 
     def flip(self):
+        """Смена цвета замыкаемых фишек"""
         for [x, y] in self.checkers_flip:
             if self.turn:
                 self.matrix[x][y].color = 'white'
             else:
                 self.matrix[x][y].color = 'black'
 
-    def GetPixelCoords(self, x, y):
-        return self.y + self.board_size * (2 * y + 1) // 16, self.x + self.board_size * (2 * x + 1) // 16
-
     def InMatrix(self, x, y):
+        """Проверка принадлежности доске"""
         return (x >= 0) and (x < 8) and (y >= 0) and (y < 8)
 
     def get_hints(self):
+        """Получение списка хинтов"""
         self.hints = []
         for y in range(8):
             for x in range(8):
@@ -162,6 +173,7 @@ class ReversiBoard(Board):
                     self.hints.append((x, y))
 
     def score(self):
+        """Подсчет очков"""
         self.pointsA = 0
         self.pointsB = 0
         for x in range(8):

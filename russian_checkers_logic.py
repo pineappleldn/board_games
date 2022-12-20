@@ -1,10 +1,10 @@
-from objects import *
-from Locals import *
+from anyboard import *
 
 
 class CheckerBoard(Board):
-    def __init__(self, matrix1=None, x=0, y=0, board_size=664):
-        super().__init__(matrix1=matrix1, x=x, y=y, board_size=board_size)
+    def __init__(self, board_image, image_white, image_black, crown, matrix1=None, x=0, y=0, board_size=573):
+        super().__init__(board_image=board_image, image_white=image_white, image_black=image_black, crown=crown,
+                         matrix1=matrix1, x=x, y=y, board_size=board_size)
         """
         конструктор класса CheckerBoard, который наследует класс Board
         turn - проверяет: ход принадлежит белым или нет
@@ -20,6 +20,7 @@ class CheckerBoard(Board):
         self.pos2_x = -1
         self.pos2_y = -1
         self.end = False
+        self.end_phrase = ''
 
     def move(self):
         """
@@ -28,7 +29,10 @@ class CheckerBoard(Board):
         x = int(self.x + self.board_size * (2 * self.pos2_x + 1) / 16)
         y = int(self.y + self.board_size * (2 * self.pos2_y + 1) / 16)
         if self.matrix[self.pos1_y][self.pos1_x].color is not None:
-            self.matrix[self.pos2_y][self.pos2_x] = Chips(x, y, color=self.matrix[self.pos1_y][self.pos1_x].color)
+            self.matrix[self.pos2_y][self.pos2_x] = Chips(image_white=self.matrix[self.pos1_y][self.pos1_x].image_white,
+                                                          image_black=self.matrix[self.pos1_y][self.pos1_x].image_black,
+                                                          crown=self.matrix[self.pos1_y][self.pos1_x].crown,
+                                                          x=x, y=y, color=self.matrix[self.pos1_y][self.pos1_x].color)
             self.matrix[self.pos2_y][self.pos2_x].queen = self.matrix[self.pos1_y][self.pos1_x].queen
             self.matrix[self.pos1_y][self.pos1_x] = Nones()
 
@@ -122,16 +126,16 @@ class CheckerBoard(Board):
 
         s_b, s_w = self.skan()  # проверка на завершение игры
         if not s_w:
-            print('Победили чёрные')
+            self.end_phrase = 'Победили чёрные'
             self.end = True
         elif not s_b:
-            print('Победили белые')
+            self.end_phrase = 'Победили белые'
             self.end = True
         elif self.turn and not self.list_hw():
-            print('Победили чёрные')
+            self.end_phrase = 'Победили чёрные'
             self.end = True
         elif not self.turn and not self.list_hb():
-            print('Победили белые')
+            self.end_phrase = 'Победили белые'
             self.end = True
         pg.display.update()  # !!!обновление
 
@@ -156,16 +160,16 @@ class CheckerBoard(Board):
 
         s_b, s_w = self.skan()  # проверка на завершение игры
         if not s_w:
-            print('Победили чёрные')
+            self.end_phrase = 'Победили чёрные'
             self.end = True
         elif not s_b:
-            print('Победили белые')
+            self.end_phrase = 'Победили белые'
             self.end = True
         elif self.turn and not self.list_hw():
-            print('Победили чёрные')
+            self.end_phrase = 'Победили чёрные'
             self.end = True
         elif not self.turn and not self.list_hb():
-            print('Победили белые')
+            self.end_phrase = 'Победили белые'
             self.end = True
         pg.display.update()  # !!!обновление
 

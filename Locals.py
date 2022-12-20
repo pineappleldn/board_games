@@ -2,7 +2,7 @@ import pygame as pg
 FPS = 30
 width = 900
 height = 900
-matrix = [
+matrix1 = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 3, 0, 0, 0],

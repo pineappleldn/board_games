@@ -18,6 +18,8 @@ class Background:
         self.image_rules = image_rules
         self.reversi = ReversiBoard(board_image, image_white, image_black, crown, matrix1, 538, 88)
         self.checkers = CheckerBoard(board_image, image_white, image_black, crown, matrix2, 538, 88)
+        self.board_image, self.image_white, self.image_black, self.crown, self.matrix1, self.matrix2 =\
+            board_image, image_white, image_black, crown, matrix1, matrix2
         self.active_board = Nones()
         self.mode = 4
         self.end = False
@@ -38,12 +40,18 @@ class Background:
         self.mode = mode
         if self.mode == 1:
             self.x = False
+            self.reversi = ReversiBoard(self.board_image, self.image_white, self.image_black, self.crown,
+                                        self.matrix1, 538, 88)
             self.active_board = self.reversi
         elif self.mode == 2:
             self.x = False
+            self.checkers = CheckerBoard(self.board_image, self.image_white, self.image_black, self.crown,
+                                         self.matrix2, 538, 88)
             self.active_board = self.checkers
         elif self.mode == 3:
             self.x = True
+            self.checkers = CheckerBoard(self.board_image, self.image_white, self.image_black, self.crown,
+                                         self.matrix2, 538, 88)
             self.active_board = self.checkers
         elif self.mode == 4 or mode == 5:
             phase = self.active_board.end_phrase
